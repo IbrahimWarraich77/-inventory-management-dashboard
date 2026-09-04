@@ -16,7 +16,13 @@ Industry-level inventory management backend for an e-commerce store, built with 
 
 ## Features (Planned)
 - [x] Project setup
-- [ ] Product/Category/Supplier CRUD
+- [x] Category, Supplier, Product, User entities with JPA
+- [x] Entity relationships (Product → Category, Product → Supplier)
+- [x] Optimistic locking on Product (concurrency safety)
+- [x] Global exception handling
+- [x] Environment-based configuration (dev profile)
+- [x] Basic unit testing (repository layer)
+- [ ] Full CRUD REST APIs
 - [ ] JWT Authentication & Role-based Access
 - [ ] Stock tracking & low-stock alerts
 - [ ] Reporting & analytics
@@ -42,3 +48,5 @@ This project follows a phased development approach:
 - Phase 2: Security, Transactions & Testing
 - Phase 3: Production Readiness (Docker, CI/CD, caching)
 - Phase 4: Advanced Features (reporting, async events)
+## Progress Log
+- **Week 1 (Complete):** Project foundation — entities, repositories, relationships, exception handling, dev environment setup, first unit tests.
