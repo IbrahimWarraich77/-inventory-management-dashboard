@@ -1,0 +1,29 @@
+package com.inventory.inventory_management.controller;
+
+import com.inventory.inventory_management.dto.ProductRequestDto;
+import com.inventory.inventory_management.dto.ProductResponseDto;
+import com.inventory.inventory_management.service.ProductService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
+public class ProductController {
+
+    private final ProductService productService;
+
+    @PostMapping
+    public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto requestDto) {
+        ProductResponseDto created = productService.create(requestDto);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getById(id));
+    }
+}
