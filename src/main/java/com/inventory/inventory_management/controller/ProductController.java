@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
@@ -25,5 +27,22 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.getById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ProductResponseDto>> getAll() {
+        return ResponseEntity.ok(productService.getAll());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponseDto> update(
+            @PathVariable Long id, @Valid @RequestBody ProductRequestDto requestDto) {
+        return ResponseEntity.ok(productService.update(id, requestDto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        productService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

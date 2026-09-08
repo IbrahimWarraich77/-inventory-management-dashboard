@@ -14,6 +14,8 @@ import com.inventory.inventory_management.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -53,5 +55,48 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return productMapper.toResponseDto(product);
+    }
+
+    @Override
+    public List<ProductResponseDto> getAll() {
+        return productRepository.findByIsDeletedFalse()
+                .stream()
+                .map(productMapper::toResponseDto)
+                .toList();
+    }
+
+    @Override
+    public ProductResponseDto update(Long id, ProductRequestDto requestDto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
+        Category category = categoryRepository.findById(requestDto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Category not found with id: " + requestDto.getCategoryId()));
+
+        Supplier supplier = supplierRepository.findById(requestDto.getSupplierId())
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Supplier not found with id: " + requestDto.getSupplierId()));
+
+        product.setName(requestDto.getName());
+        product.setSku(requestDto.getSku());
+        product.setDescription(requestDto.getDescription());
+        product.setPrice(requestDto.getPrice());
+        product.setQuantity(requestDto.getQuantity());
+        product.setReorderLevel(requestDto.getReorderLevel());
+        product.setCategory(category);
+        product.setSupplier(supplier);
+
+        Product updated = productRepository.save(product);
+        return productMapper.toResponseDto(updated);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+
+        product.setIsDeleted(true);
+        productRepository.save(product);
     }
 }
