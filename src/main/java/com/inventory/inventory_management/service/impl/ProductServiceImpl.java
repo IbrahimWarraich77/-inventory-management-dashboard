@@ -12,9 +12,9 @@ import com.inventory.inventory_management.repository.ProductRepository;
 import com.inventory.inventory_management.repository.SupplierRepository;
 import com.inventory.inventory_management.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,11 +58,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductResponseDto> getAll() {
-        return productRepository.findByIsDeletedFalse()
-                .stream()
-                .map(productMapper::toResponseDto)
-                .toList();
+    public Page<ProductResponseDto> getAll(String name, Pageable pageable) {
+        Page<Product> productPage;
+
+        if (name != null && !name.isBlank()) {
+            productPage = productRepository.findByIsDeletedFalseAndNameContainingIgnoreCase(name, pageable);
+        } else {
+            productPage = productRepository.findByIsDeletedFalse(pageable);
+        }
+
+        return productPage.map(productMapper::toResponseDto);
     }
 
     @Override
